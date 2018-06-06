@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Pendaftar, Prodi
 from django.urls import reverse
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 
@@ -9,9 +10,20 @@ def index(request):
     return render(request, 'index.html', {'data': 'data'})
 
 def login(request):
-    return render(request, 'login.html')
+    if not 'email' in request.POST and not 'password' in request.POST:
+        return render(request, 'login.html')
+    email = request.POST['email']
+    password = request.POST['password']
+    user = authenticate(request, email=email, password=password)
+    if user is not None:
+        login(request, user)
+        return redirect('ppmb:tampil')
+    else:
+        return render(request, 'login.html')
 
 def tampil(request):
+    if not request.user.is_authenticated:
+        return redirect('ppmb:login')
     pendaftar = Pendaftar.objects.all()
     return render(request, 'tampil.html', {'pendaftar': pendaftar})
 

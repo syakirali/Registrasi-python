@@ -51,3 +51,10 @@ class Pendaftar(models.Model):
     updated_at = models.DateField(auto_now=True, auto_now_add=False)
     def __str__(self):
         return self.nama
+
+class User(models.Model):
+    email = models.CharField(primary_key=True,max_length=75)
+    password = models.CharField(max_length=100)
+    remember_token = models.CharField(max_length=100)
+    def __str__(self):
+        return self.email
